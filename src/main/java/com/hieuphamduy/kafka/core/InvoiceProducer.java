@@ -3,7 +3,7 @@ package com.hieuphamduy.kafka.core;
 import com.hieuphamduy.kafka.config.JsonSerializer;
 import com.hieuphamduy.kafka.model.Invoice;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
+import static org.apache.kafka.clients.producer.ProducerConfig.*;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -17,10 +17,13 @@ public class InvoiceProducer {
 
     final var random = new Random();
     final var props = new Properties();
-    props.put(ProducerConfig.CLIENT_ID_CONFIG, "producer");
-    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093");
-    props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+    props.put(CLIENT_ID_CONFIG, "producer");
+    props.put(BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093");
+    props.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    props.put(VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+    props.put(RETRIES_CONFIG, 10); // max 10 times
+    props.put(RETRY_BACKOFF_MS_CONFIG, 500); // wait 0.5s between retries
+    props.put(DELIVERY_TIMEOUT_MS_CONFIG, 5000); // 5 seconds timeout
 
     try (var producer = new KafkaProducer<String, Invoice>(props)) {
       IntStream.range(0, 1000)
