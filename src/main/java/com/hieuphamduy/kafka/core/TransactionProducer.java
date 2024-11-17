@@ -15,6 +15,7 @@ public class TransactionProducer {
     props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
     props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
     props.setProperty(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "demo-transaction-id");
+    props.setProperty(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4");
 
     final var producer = new KafkaProducer<String, String>(props);
     producer.initTransactions();
